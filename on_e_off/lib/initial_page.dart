@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 
@@ -20,7 +22,7 @@ class _InitialPageState extends State<InitialPage> {
   bool disconnect = false;
   bool error = false;
   bool notWorking = false;
-  String serverUrl = 'http://';
+  String serverUrl = '';
 
   final TextEditingController _serverAddressController =
       TextEditingController();
@@ -79,6 +81,10 @@ class _InitialPageState extends State<InitialPage> {
       });
     } catch (e) {
       print(e);
+      await showDialog(
+        context: context,
+        builder: (BuildContext context) => errorDialog(),
+      );
     }
   }
 
@@ -90,7 +96,26 @@ class _InitialPageState extends State<InitialPage> {
       });
     } catch (e) {
       print(e);
+      await showDialog(
+        context: context,
+        builder: (BuildContext context) => errorDialog(),
+      );
     }
+  }
+
+  Widget errorDialog() {
+    return AlertDialog(
+      title: const Text('Erro'),
+      content: const Text('Não foi possível conectar ao servidor.'),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: const Text('Ok'),
+        ),
+      ],
+    );
   }
 
   @override
@@ -151,6 +176,7 @@ class _InitialPageState extends State<InitialPage> {
                     if (isConnected) {
                       setState(() {
                         disconnect = true;
+                        serverUrl = '';
                         isConnected = false;
                       });
                       return;
@@ -271,9 +297,9 @@ class _InitialPageState extends State<InitialPage> {
                       color: isConnected
                           ? Colors.green
                           : Theme.of(context).colorScheme.error,
-                    ),
+                    ),      
                   ),
-                  TextSpan(text: '%')
+                 const TextSpan(text: '%')
                 ],
               ),
             ),
