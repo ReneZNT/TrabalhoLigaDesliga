@@ -39,10 +39,12 @@ class _InitialPageState extends State<InitialPage> {
       notWorking = false;
       Response response = await Dio(
         BaseOptions(
-          connectTimeout: const Duration(seconds: 3),
-          receiveTimeout: const Duration(seconds: 3),
+          connectTimeout: const Duration(seconds: 5),
+          receiveTimeout: const Duration(seconds: 5),
         ),
-      ).get('$serverUrl/lesensor');
+      ).get(
+        '$serverUrl/lesensor',
+      );
       setState(() {
         temperature = response.data['temperatura'];
         humidity = response.data['umidade'];
@@ -177,6 +179,9 @@ class _InitialPageState extends State<InitialPage> {
                       setState(() {
                         disconnect = true;
                         serverUrl = '';
+                        temperature = 0;
+                        humidity = 0;
+                        isOn = null;
                         isConnected = false;
                       });
                       return;
@@ -297,9 +302,9 @@ class _InitialPageState extends State<InitialPage> {
                       color: isConnected
                           ? Colors.green
                           : Theme.of(context).colorScheme.error,
-                    ),      
+                    ),
                   ),
-                 const TextSpan(text: '%')
+                  const TextSpan(text: '%')
                 ],
               ),
             ),
